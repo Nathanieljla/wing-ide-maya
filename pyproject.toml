@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wing_ide_maya"
+version = "0.9.2"
+authors = [
+  { name="Nathaniel A", email="developer@3dcg.guru" },
+]
+description = "Scripts for using Wing with Maya"
+readme = "README.md"
+requires-python = ">=3"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/Nathanieljla/wing-ide-maya"
