@@ -861,7 +861,8 @@ class InstallerUi(QWidget):
                  launch_message='', 
                  installing_message = 'Installing, please wait ...',
                  failed_message='Install Failed!',
-                 success_message="Install Completed Successfully!", 
+                 success_message="Install Completed Successfully!",
+                 post_error_messsage='Install Successful. Clean-up errored.  See output.', 
                  *args, **kwargs
                  ):
         
@@ -869,11 +870,13 @@ class InstallerUi(QWidget):
         super(InstallerUi, self).__init__(parent=parent, *args, **kwargs)
         
         self.name = name
+        self.module_manager = module_manager
+        
         self.launch_message = launch_message
         self.installing_message = installing_message
         self.failed_message = failed_message
         self.success_message = success_message
-        self.module_manager = module_manager        
+        self.post_error_messsage =  post_error_messsage
         
         self.create_layout(background_color, company_logo_size)
         self.set_default_size(name)
@@ -980,7 +983,9 @@ class InstallerUi(QWidget):
         else:
             self.message_label.setText(self.failed_message)
         
-        self.module_manager.post_install()
+        no_errors = self.module_manager.post_install()
+        if not no_errors:
+            self.message_label.setText(self.post_error_messsage)
     
         
     def on_close(self):
@@ -1034,9 +1039,12 @@ class CustomInstaller(ModuleManager):
     
     def post_install(self):
         """Used after install() to do any clean-up
-
+        
+        returns:
+        True if no errors occured during the post install process (else False)
         """  
         print('post install')
+        successful = True
         if self.install_succeeded:
             #lets get our script and plug-ins useable so we don't have to restart Maya
             if self.scripts_path not in sys.path:
@@ -1047,17 +1055,28 @@ class CustomInstaller(ModuleManager):
                 
                 
             #Let's get our plug-in loaded!
-            fromSource = os.path.join(self.package_install_path, 'extras', 'userSetup.py')
-            toTarget = os.path.join(self.plugins_path, 'userSetup.py')
+            fromSource = os.path.join(self.package_install_path, 'userSetup.py')
+            toTarget = os.path.join(self.scripts_path, 'userSetup.py')
             print('Copy From : {} to: {}'.format(fromSource, toTarget))
             try:
                 shutil.copy(fromSource, toTarget)
             except Exception as e:
-                maya.cmds.warning('Wing Install:Copying userSetup failed')
+                maya.cmds.warning('WING POST INSTALL:Copying userSetup failed')
+                successful = False
+                
+                
+            try:
+                import wing.make_menu
+                wing.make_menu.run()
+            except:
+                maya.cmds.warning('WING POST INSTALL:Couldnt make wing menu')
+                successful = False
                                
         else:
             #install failed so do alternative cleanup
             pass
+        
+        return successful
               
         
     
