@@ -1065,10 +1065,10 @@ class MyInstaller(ModuleManager):
                 
                 
             try:
-                import wing.make_menu
-                wing.make_menu.run()
+                #open our command port and making the menu
+                import wing.userSetup
             except:
-                maya.cmds.warning('WING POST INSTALL:Couldnt make wing menu')
+                maya.cmds.warning('WING POST INSTALL:Couldnt make wing menu.  Try restarting Maya.')
                 successful = False
                                
         else:
