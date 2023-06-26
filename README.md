@@ -7,7 +7,7 @@ Scripts and a menu for communicating between Maya and Wing
 # Installation
 [Video Instructions](https://youtu.be/X-q51Up418E)
 
-NOTE: The included wing_installer will install pymel if it's not already installed.  It's recommended to start Maya with admin privileges while doing this install if you want pymel installed in Maya's site-packages instead of under window's userData.
+NOTE: The included wing_installer will install pymel if it's not already installed. 
 
 ### Drag & Drop
 The easiest way to install this application is to ...
